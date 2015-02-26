@@ -1,0 +1,18 @@
+#bugtitle,#statustitle{ font-size: 24px;font-weight: bolder;color: #333333;}
+#mainbody{ margin-top: 20px; }
+h3{ font-size: 20px;font-weight: bold;color: #666666; }
+h4{ font-weight: bold;color: #666666; }
+body{ background-color: #f9f9f9; }
+tbody tr { color: #5e5e5e;font-weight: bold;}
+td { align-content: center;}
+
+table tr td a {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
+a:hover{
+    text-decoration:none;  /*鼠标放上去有下划线*/
+    color: red;
+}

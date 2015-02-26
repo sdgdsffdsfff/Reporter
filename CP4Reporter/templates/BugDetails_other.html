@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <title></title>
+    <style type="text/css">
+        td{
+            color: #666666;
+            font-weight:bolder;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                {% if pName %}
+                <td colspan="9" align="center"><h1 style="font-size: 24px;font-weight: bolder;">提交人{{ pName }}的{{ status }}状态的BUG明细</h1></td>
+                {% endif %}
+                {% if proName %}
+                <td colspan="9" align="center"><h1 style="font-size: 24px;font-weight: bolder;">{{ proName }}项目的{{ status }}状态的BUG明细</h1></td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td align="center">Id</td>
+                <td align="center">ProjectName</td>
+                <td align="center" style="width: 90px;">IssueKey</td>
+                <td align="center">Summary</td>
+                <td align="center">Reporter</td>
+                <td align="center">Assignee</td>
+                <td align="center">Priority</td>
+                <td align="center">Status</td>
+                <td align="center">CreateTime</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% if results %}
+        {% for v in results %}
+            <tr>
+                <td>{{ v.id }}</td>
+                <td>{{ v.projectName }}</td>
+                <td><a href="http://cp4.mgmt.ctripcorp.com/browse/{{ v.issuekey }}" target="_blank">{{ v.issuekey }}</a></td>
+                <td>{{ v.SUMMARY }}</td>
+                <td>{{ v.REPORTER }}</td>
+                <td>{{ v.ASSIGNEE }}</td>
+                <td>{{ v.PRIORITY }}</td>
+                <td>{{ v.status }}</td>
+                <td>{{ v.CREATED }}</td>
+            </tr>
+        {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="9" align="center">暂无数据</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+<div style="float:right; margin-right: 50px; margin-bottom: 20px;">
+    <button class="btn btn-success btn-lg" id="goback">返回</button>
+</div>
+
+{#返回按钮#}
+<script language="javascript">
+    $('#goback').click(function(){
+        history.back()
+    });
+</script>
+</body>
+</html>

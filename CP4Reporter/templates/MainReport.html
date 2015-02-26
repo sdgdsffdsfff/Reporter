@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+<style type="text/css">
+    .dropdown-menu .divider{
+            margin: 0px;
+        }
+    .dropdown-menu>li>a{
+        padding: 10px 20px;
+    }
+</style>
+
+
+<div class="container" style="width: 100%">
+
+    <table style="margin-top:20px; margin-bottom: 20px;">
+        <tr>
+            <td>
+                <a href="/allBug/" target="_blank"><button type="button" class="btn btn-primary">查看所有BUG</button></a>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+                <a href="/allPro/" target="_blank"><button type="button" class="btn btn-primary">查看所有项目</button></a>
+            </td>
+            <td>&nbsp;</td>
+            <td class="form-inline">
+                <!-- Split button -->
+                <div class="btn-group" id="everyDayData">
+                    <button id="time" type="button" class="btn btn-success">查看BUG趋势图</button>
+
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#" name="week">一周BUG趋势</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" name="month">一个月BUG趋势</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" name="quarter">一季度BUG趋势</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" name="halfyear">半年BUG趋势</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" name="year">一年BUG趋势</a></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div id="kkk">
+    <!--Step:2 为ECharts准备一个具备大小（宽高）的Dom-->
+
+    </div>
+
+
+
+
+
+    <table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <td colspan="13" align="center"><h1 style="font-size: 24px;font-weight: bolder;color: #333333;">项目BUG统计</h1><span style="color:red;">说明:总数(前端BUG数/服务端BUG数/SOA BUG数)</span></td>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center"><h3>项目名称</h3></td>
+                <td colspan="5" style="text-align: center"><h3>状态</h3></td>
+                <td colspan="3" style="text-align: center"><h3>今日数据</h3></td>
+                <td style="text-align: center"><h3>案例BUG</h3></td>
+                <td style="text-align: center"><h3>NoCaseBUG</h3></td>
+                <td style="text-align: center"><h3>接口BUG</h3></td>
+                <td style="text-align: center"><h3>总计</h3></td>
+            </tr>
+            <tr style="text-align: center">
+                <td><p style="color: #5e5e5e;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 打开</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 正在处理</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 重新打开</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 已解决</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-ok"></span> 已关闭</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日新建</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日回退</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日关闭</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 案例BUG</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> NoCaseBUG</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 接口BUG</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 总计</p></td>
+            </tr>
+        </thead>
+        <tbody id="pro">
+        {% for k,v in pn.items %}
+            <tr align="center">
+                <td class="mymark"><a href="/projectBug/?proName={{ k }}">{{ k }}</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Open">{{ v.Open.all }}&nbsp;&nbsp;({{ v.Open.client }}/{{ v.Open.server }}/{{ v.Open.soa }})</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=In Progress">{{ v.InProgress.all }}&nbsp;&nbsp;({{ v.InProgress.client }}/{{ v.InProgress.server }}/{{ v.InProgress.soa }})</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Reopened">{{ v.Reopened.all }}&nbsp;&nbsp;({{ v.Reopened.client }}/{{ v.Reopened.server }}/{{ v.Reopened.soa }})</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Resolved">{{ v.Resolved.all }}&nbsp;&nbsp;({{ v.Resolved.client }}/{{ v.Resolved.server }}/{{ v.Resolved.soa }})</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Closed">{{ v.Closed.all }}&nbsp;&nbsp;({{ v.Closed.client }}/{{ v.Closed.server }}/{{ v.Closed.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=TodayOpen">{{ v.TodayOpen.all }}&nbsp;&nbsp;({{ v.TodayOpen.client }}/{{ v.TodayOpen.server }}/{{ v.TodayOpen.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=TodayReOpen">{{ v.TodayReOpen.all }}&nbsp;&nbsp;({{ v.TodayReOpen.client }}/{{ v.TodayReOpen.server }}/{{ v.TodayReOpen.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=TodayClosed">{{ v.TodayClosed.all }}&nbsp;&nbsp;({{ v.TodayClosed.client }}/{{ v.TodayClosed.server }}/{{ v.TodayClosed.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=CaseBug">({{ v.CaseBug }})</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=NoCaseBug">({{ v.NoCaseBug }})</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=interfaceBug">({{ v.InterfaceBug }})</a></td>
+                <td>{{ v.All.all }}&nbsp;&nbsp;({{ v.All.client }}/{{ v.All.server }}/{{ v.All.soa }})</td>
+            </tr>
+        {% endfor %}
+            <tr style="background-color: #f7ecb5;" align="center">
+                <td>总计</td>
+                <td><a href="/bugDetails/?proName=all&status=Open">{{ pnall.Open.all }}&nbsp;&nbsp;({{ pnall.Open.client }}/{{ pnall.Open.server }}/{{ pnall.Open.soa }})</a></td>
+                <td><a href="/bugDetails/?proName=all&status=In Progress">{{ pnall.InProgress.all }}&nbsp;&nbsp;({{ pnall.InProgress.client }}/{{ pnall.InProgress.server }}/{{ pnall.InProgress.soa }})</a></td>
+                <td><a href="/bugDetails/?proName=all&status=Reopened">{{ pnall.Reopened.all }}&nbsp;&nbsp;({{ pnall.Reopened.client }}/{{ pnall.Reopened.server }}/{{ pnall.Reopened.soa }})</a></td>
+                <td><a href="/bugDetails/?proName=all&status=Resolved">{{ pnall.Resolved.all }}&nbsp;&nbsp;({{ pnall.Resolved.client }}/{{ pnall.Resolved.server }}/{{ pnall.Resolved.soa }})</a></td>
+                <td><a href="/bugDetails/?proName=all&status=Closed">{{ pnall.Closed.all }}&nbsp;&nbsp;({{ pnall.Closed.client }}/{{ pnall.Closed.server }}/{{ pnall.Closed.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName=all&status=TodayOpen">{{ pnall.TodayOpen.all }}&nbsp;&nbsp;({{ pnall.TodayOpen.client }}/{{ pnall.TodayOpen.server }}/{{ pnall.TodayOpen.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName=all&status=TodayReOpen">{{ pnall.TodayReOpen.all }}&nbsp;&nbsp;({{ pnall.TodayReOpen.client }}/{{ pnall.TodayReOpen.server }}/{{ pnall.TodayReOpen.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName=all&status=TodayClosed">{{ pnall.TodayClosed.all }}&nbsp;&nbsp;({{ pnall.TodayClosed.client }}/{{ pnall.TodayClosed.server }}/{{ pnall.TodayClosed.soa }})</a></td>
+                <td><a href="/todayBugDetails/?proName=all&status=CaseBug">({{ pnall.CaseBug }})</a></td>
+                <td><a href="/todayBugDetails/?proName=all&status=NoCaseBug">({{ pnall.NoCaseBug }})</a></td>
+                <td><a href="/todayBugDetails/?proName=all&status=interfaceBug">({{ pnall.InterfaceBug }})</a></td>
+                <td>{{ pnall.All.all }}&nbsp;&nbsp;({{ pnall.All.client }}/{{ pnall.All.server }}/{{ pnall.All.soa }})</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <td colspan="9" align="center"><h1 style="font-size: 24px;font-weight: bolder;color: #333333;">个人BUG统计</h1></td>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center"><h3>报告人</h3></td>
+                <td colspan="5" style="text-align: center"><h3>状态</h3></td>
+                <td style="text-align: center"><h3>案例BUG</h3></td>
+                <td style="text-align: center"><h3>No Case BUG</h3></td>
+                <td style="text-align: center"><h3>总计</h3></td>
+            </tr>
+            <tr style="text-align: center">
+                <td><p style="color: #5e5e5e;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 打开</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 正在处理</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 重新打开</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 已解决</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-ok"></span> 已关闭</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 案例BUG</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> No Case BUG</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 总计</p></td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for k,v in pb.items %}
+            <tr align="center">
+                <td><a href="/personalBug/?pName={{ k }}">{{ k }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=Open">{{ v.Open }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=In Progress">{{ v.InProgress }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=Reopened">{{ v.Reopened }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=Resolved">{{ v.Resolved }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=Closed">{{ v.Closed }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=CaseBug">{{ v.CaseBug }}</a></td>
+                <td><a href="/personalBugDetails/?pName={{ k }}&status=NoCaseBug">{{ v.NoCaseBug }}</a></td>
+                <td>{{ v.All }}</td>
+            </tr>
+        {% endfor %}
+            <tr style="background-color: #f7ecb5;" align="center">
+                <td>总计</td>
+                <td><a href="/personalBugDetails/?pName=all&status=Open">{{ all.Open }}</a></td>
+                <td><a href="/personalBugDetails/?pName=all&status=In Progress">{{ all.InProgress }}</a></td>
+                <td><a href="/personalBugDetails/?pName=all&status=Reopened">{{ all.Reopened }}</a></td>
+                <td><a href="/personalBugDetails/?pName=all&status=Resolved">{{ all.Resolved }}</a></td>
+                <td><a href="/personalBugDetails/?pName=all&status=Closed">{{ all.Closed }}</a></td>
+                <td><a href="/personalBugDetails/?pName=all&status=CaseBug">{{ all.CaseBug }}</a></td>
+                <td><a href="/personalBugDetails/?pName=all&status=NoCaseBug">{{ all.NoCaseBug }}</a></td>
+                <td>{{ all.All }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+
+</div>
+<script language="JavaScript">
+    $('#everyDayData ul li').click(function () {
+        $('#everyDayData #time').text($(this).text());
+        var url = "/chart/";
+        var data = {
+            'dataType':$(this).children('a').attr("name")
+        };
+        $.ajax({
+            url:url,
+            data:data,
+            type:"post",
+            success:function(dates){
+                $('#kkk').empty()
+                $("#kkk").html(dates)
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        var url = "/chart/";
+        var data = {
+            'dataType':'month'
+        };
+        $.ajax({
+            url:url,
+            data:data,
+            type:"post",
+            success:function(dates){
+                $('#kkk').empty()
+                $("#kkk").html(dates)
+            }
+        });
+    });
+</script>
+
+<div class="container" style="margin-top: 20px; margin-bottom: 20px;" align="center">
+    <span style="color: red;margin-right: 10px;font-weight: bolder;">注:本系统数据来自本机数据库,系统每日会自动定时更新一次.如果觉得数据不正确,请点击"同步数据"按钮从CP4服务器上拉取最新数据至本地!</span>
+    <button class="btn btn-success btn-lg" id="syncdb" style="margin-left: 20px;">同步数据</button>
+</div>
+
+<script language="javascript">
+    $(document).ready(function(){
+        $(".mymark").each(function(){
+            //alert($(this).text());
+            if($(this).text()=="未规划项目"){
+                $(this).children('a').css('color','#C0392B');
+            }
+        });
+    });
+
+    $('#syncdb').click(function(){
+        $('#syncdb').text("正在同步...请稍候")
+        $(this).attr("disabled", true); // 设置按钮不可用
+        var url = "/syncCP4DB/"
+        $.post(url,"",function(result){
+            alert(result);
+            $('#syncdb').text("同步数据")
+            location.reload()
+        });
+    });
+</script>
+
+</body>
+</html>

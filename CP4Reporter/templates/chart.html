@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <!--Step:1 引入一个模块加载器，如esl.js或者require.js-->
+    <script src="/static/js/esl.js"></script>
+    <title></title>
+</head>
+<body>
+<div class="container" id="trendchart" style="height:400px;border:1px solid #ccc;width: 100%;"></div>
+
+<script type="text/javascript">
+    var title = $('#everyDayData #time').text()
+    //var title = "{{ dataType }}"
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths:{
+            echarts:'/static/js/echarts',
+            'echarts/chart/bar' : '/static/js/echarts-map',
+            'echarts/chart/line': '/static/js/echarts-map',
+            'echarts/chart/map' : '/static/js/echarts-map'
+        }
+    });
+
+
+    // 拿数据
+    var open_keys = new Array();
+    var closed_keys = new Array();
+    var open_values = new Array();
+    var closed_values = new Array();
+
+    "{% for k in every_week_bug_open %}"
+        open_keys.push("{{ k.time }}")
+        open_values.push("{{ k.num }}")
+    "{% endfor %}"
+
+    "{% for k in every_week_bug_closed %}"
+        closed_keys.push("{{ k.time }}")
+        closed_values.push("{{ k.num }}")
+    "{% endfor %}"
+
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function (ec) {
+            //--- 折柱 ---
+            var myChart = ec.init(document.getElementById('trendchart'));
+            myChart.showLoading({
+                text:"图表数据正在努力加载..."
+            });
+            myChart.hideLoading();
+            myChart.setOption({
+                title : {
+                    text: title,
+                    subtext: 'author : kiven'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['打开BUG数','关闭BUG数']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        boundaryGap : false,
+                        data : open_keys
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        axisLabel : {
+                            formatter: '{value}'
+                        }
+                    }
+                ],
+                series : [
+                    {
+                        name:'打开BUG数',
+                        type:'line',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:open_values
+                    },
+                    {
+                        name:'关闭BUG数',
+                        type:'line',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:closed_values
+                    }
+                ]
+                });
+        }
+    );
+</script>
+</body>
+
+</html>

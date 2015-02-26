@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-Type" content="text/html" charset="UTF-8">
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--Step:1 引入一个模块加载器，如esl.js或者require.js-->
+    <script src="/static/js/esl.js"></script>
+
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+
+<div class="container" id="mainbody" >
+    <ul class="nav nav-pills" role="tablist">
+        <li role="presentation" class="active" id="main"><a href="#">数据展示</a></li>
+        <li role="presentation" class="active" id="personal"><a href="#">图表展示</a></li>
+        <li id="sendbutton" style="float: right; display: none;"><button class="btn btn-success btn-lg" id="sendemail_button">发送邮件</button></li>
+        <!--<li role="presentation"><a href="#">Messages</a></li>-->
+    </ul>
+    <div id="mailContent" >
+        <div id="mainContent" style="display: none;">
+        <table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1">
+
+            <thead>
+            <tr>
+                <td colspan="9" align="center"><h1 style="font-size: 24px;font-weight: bolder;color: #333333;" id="bugtitle">项目BUG统计</h1></td>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center"><h3>项目名</h3></td>
+                <td colspan="8" style="text-align: center"><h3>状态</h3></td>
+            </tr>
+            <tr style="text-align: center">
+                <td><p style="color: #5e5e5e;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 打开</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 正在处理</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 已解决</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-ok"></span> 已关闭</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日新建</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日回退</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日关闭</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 合计</p></td>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for k,v in proInfo.items %}
+            <tr>
+                <td>{{ k }}</td>
+                <td><span class="badge">{{ v.Open }}</span></td>
+                <td><span class="badge">{{ v.InProgress }}</span></td>
+                <td><span class="badge">{{ v.Resolved }}</span></td>
+                <td><span class="badge">{{ v.Closed }}</span></td>
+                <td><span class="badge">{{ v.todayOpen }}</span></td>
+                <td><span class="badge">{{ v.todayReopen }}</span></td>
+                <td><span class="badge">{{ v.todayClose }}</span></td>
+                <td><span class="badge">{{ v.total }}</span></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>合计</td>
+                <td><span class="badge">{{ openBugNum }}</span></td>
+                <td><span class="badge">{{ inprogressNum }}</span></td>
+                <td><span class="badge">{{ resolvedBugNum }}</span></td>
+                <td><span class="badge">{{ closedBugNum }}</span></td>
+                <td><span class="badge">{{ todayOpenBugNum }}</span></td>
+                <td><span class="badge">{{ todayReopenBugNum }}</span></td>
+                <td><span class="badge">{{ todayCloseBugNum }}</span></td>
+                <td><span class="badge">{{ allBugNum }}</span></td>
+
+            </tr>
+            </tbody>
+        </table>
+        </div>
+
+
+        <div id="personalContent" style="display: none;">
+            <table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1">
+            <thead>
+            <tr>
+                <td colspan="6" align="center"><h1 style="font-size: 24px;font-weight: bolder;color: #333333;" id="statustitle">个人BUG统计</h1></td>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center"><h3>报告人</h3></td>
+                <td colspan="5" style="text-align: center"><h3>状态</h3></td>
+            </tr>
+            <tr style="text-align: center">
+                <td><p style="color: #5e5e5e;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 打开</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 正在处理</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 已解决</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-ok"></span> 已关闭</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 合计</p></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for k,v in personInfo.items %}
+            <tr>
+                <td>{{ k }}</td>
+                <td><span class="badge">{{ v.open }}</span></td>
+                <td><span class="badge">{{ v.inprogess }}</span></td>
+                <td><span class="badge">{{ v.resolved }}</span></td>
+                <td><span class="badge">{{ v.closed }}</span></td>
+                <td><span class="badge">{{ v.total }}</span></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>合计</td>
+                <td><span class="badge">{{ openStatusNum }}</span></td>
+                <td><span class="badge">{{ inprogessStatusNum }}</span></td>
+                <td><span class="badge">{{ resolvedStatusNum }}</span></td>
+                <td><span class="badge">{{ closeStatusNum }}</span></td>
+                <td><span class="badge">{{ allStatusNum }}</span></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<script language="javascript">
+
+    $(document).ready(function(){
+        //发送邮件
+        $("#sendemail_button").click(function(){
+            var url = 'http://127.0.0.1:8000/ajaxSendMail/';
+            var data={'mailContent':$("#mailContent").html()};
+            $.post(url,data,function(result){
+                alert(result);
+            });
+        });
+
+        $("#main").click(function(){
+            $("#mainContent").show();
+            $("#personalContent").show();
+            $("#all").hide();
+            $("#one").hide();
+        });
+        $("#personal").click(function(){
+            $("#all").show();
+            $("#one").show();
+            $("#mainContent").hide();
+            $("#personalContent").hide();
+        });
+
+    });
+
+
+</script>
+<!--{{proInfo}}-->
+
+
+ <!--Step:2 为ECharts准备一个具备大小（宽高）的Dom-->
+<div class="container" id="all" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
+<div class="container" id="one" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
+
+
+
+<!--项目BUG统计图表-->
+<script type="text/javascript">
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths:{
+            echarts:'/static/js/echarts',
+            'echarts/chart/bar' : '/static/js/echarts-map',
+            'echarts/chart/line': '/static/js/echarts-map',
+            'echarts/chart/map' : '/static/js/echarts-map'
+        }
+    });
+
+
+    // 拿到数据
+    var proKey = new Array()
+    var proValue_open = new Array()
+    var proValue_inprogress = new Array()
+    var proValue_resolved = new Array()
+    var proValue_closed = new Array()
+    var proValue_todayopen = new Array()
+    var proValue_todayreopen = new Array()
+    var proValue_todayclose = new Array()
+    "{% for k,v in proInfo.items %}"
+    proKey.push('{{ k }}')
+    proValue_open.push('{{ v.Open }}')
+    proValue_inprogress.push('{{v.InProgress}}')
+    proValue_resolved.push('{{ v.Resolved }}')
+    proValue_closed.push('{{ v.Closed }}')
+    proValue_todayopen.push('{{ v.todayOpen }}')
+    proValue_todayreopen.push('{{ v.todayReopen }}')
+    proValue_todayclose.push('{{ v.todayClose }}')
+    "{% endfor %}"
+    // 拿数据结束
+
+
+
+
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function (ec) {
+            //--- 折柱 ---
+            var myChart = ec.init(document.getElementById('all'));
+            myChart.showLoading({
+                text:"图表数据正在努力加载..."
+            });
+            myChart.hideLoading();
+            myChart.setOption({
+                title:{
+                  text:'项目BUG统计',
+                  subtext:'author : kiven'
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    textStyle: { fontSize: '30px' },
+                    axisPointer:{
+                        type : 'shadow'        // 默认为直线,可选为:'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data:['打开','正在处理','已解决','已关闭','今日新建','今日回退','今日关闭']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : proKey
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        splitArea : {show : true},
+                        axisLabel:{
+                            show: true,
+                            interval: 'auto'
+                        }
+                    }
+                ],
+                series : [
+                    {
+                        name:'打开',
+                        type:'bar',
+                        // 用来显示柱状图上的数据值
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_open
+                    },
+                    {
+                        name:'正在处理',
+                        type:'bar',
+                        // 用来显示柱状图上的数据值
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_inprogress
+                    },
+                    {
+                        name:'已解决',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_resolved
+                    },
+                    {
+                        name:'已关闭',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_closed
+                    },
+                    {
+                        name:'今日新建',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_todayopen
+                    },
+                    {
+                        name:'今日回退',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_todayreopen
+                    },
+                    {
+                        name:'今日关闭',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:proValue_todayclose
+                    }
+
+                ]
+            });
+        }
+    );
+</script>
+
+
+
+
+
+
+
+
+
+<!--个人BUG统计图表-->
+<script type="text/javascript">
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths:{
+            echarts:'/static/js/echarts',
+            'echarts/chart/bar' : '/static/js/echarts-map',
+            'echarts/chart/line': '/static/js/echarts-map',
+            'echarts/chart/map' : '/static/js/echarts-map'
+        }
+    });
+
+
+    // 拿到数据
+    var key = new Array()
+    var Value_open = new Array()
+    var Value_inprogess = new Array()
+    var Value_resolved = new Array()
+    var Value_closed = new Array()
+    "{% for k,v in personInfo.items %}"
+    key.push('{{ k }}')
+    Value_open.push('{{ v.open }}')
+    Value_inprogess.push('{{ v.inprogess }}')
+    Value_resolved.push('{{ v.resolved }}')
+    Value_closed.push('{{ v.closed }}')
+    "{% endfor %}"
+    // 拿数据结束
+
+
+
+
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function (ec) {
+            //--- 折柱 ---
+            var myChart = ec.init(document.getElementById('one'));
+            myChart.showLoading({
+                text:"图表数据正在努力加载..."
+            });
+            myChart.hideLoading();
+            myChart.setOption({
+                title:{
+                  text:'个人BUG统计',
+                  subtext:'author : kiven'
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    textStyle: { fontSize: '30px' },
+                    axisPointer:{
+                        type : 'shadow'        // 默认为直线,可选为:'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data:['打开','正在处理','已解决','已关闭']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : key
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        splitArea : {show : true},
+                        axisLabel:{
+                            show: true,
+                            interval: 'auto'
+                        }
+                    }
+                ],
+                series : [
+                    {
+                        name:'打开',
+                        type:'bar',
+                        // 用来显示柱状图上的数据值
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:Value_open
+                    },
+                    {
+                        name:'正在处理',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:Value_inprogess
+                    },
+                    {
+                        name:'已解决',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:Value_resolved
+                    },
+                    {
+                        name:'已关闭',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: '#800080'
+                                    }
+                                 }
+                            }
+                        },
+                        data:Value_closed
+                    }
+
+                ]
+            });
+        }
+    );
+</script>
+</body>
+</html>
