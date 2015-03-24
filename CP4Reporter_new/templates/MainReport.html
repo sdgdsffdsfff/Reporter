@@ -1,0 +1,85 @@
+{% load pagination_tags %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <link href="/static/flat-ui/css/flat-ui.css" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+<style type="text/css">
+    .dropdown-menu .divider{
+            margin: 0px;
+        }
+    .dropdown-menu>li>a{
+        padding: 10px 20px;
+    }
+</style>
+
+
+<div style="text-align: center;">
+{% autopaginate result 15 %}
+<table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <td colspan="13" align="center"><h1 style="font-size: 24px;font-weight: bolder;color: #333333;">项目BUG统计</h1></td>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center"><h3>项目名称</h3></td>
+                <td colspan="5" style="text-align: center"><h3>状态</h3></td>
+                <td colspan="3" style="text-align: center"><h3>今日数据</h3></td>
+            </tr>
+            <tr style="text-align: center">
+                <td><p style="color: #5e5e5e;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 打开</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 正在处理</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 已解决</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-ok"></span> 已关闭</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 所有回退</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日新建</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日回退</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日关闭</p></td>
+            </tr>
+        </thead>
+        <tbody id="pro">
+        {% for item in result %}
+            <tr align="center">
+                <td class="mymark"><a href="/projectBug/?proName={{ item.projectName }}">{{ item.projectName }}</a></td>
+                <td><a href="/bugDetails/?proName={{ item.projectName }}&status=Open">{{ item.OpenNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ item.projectName }}&status=In Progress">{{ item.InProgressNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ item.projectName }}&status=Resolved">{{ item.ResolvedNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ item.projectName }}&status=Closed">{{ item.ClosedNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ item.projectName }}&status=Reopened">{{ item.AllReopenNums }}</a></td>
+                <td><a href="/todayBugDetails/?proName={{ item.projectName }}&status=TodayOpen">{{ item.TOpenNums }}</a></td>
+                <td><a href="/todayBugDetails/?proName={{ item.projectName }}&status=TodayReOpen">{{ item.TReopenedNums }}</a></td>
+                <td><a href="/todayBugDetails/?proName={{ item.projectName }}&status=TodayClosed">{{ item.TClosedNums }}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% paginate %}
+</div>
+
+<div class="container" style="margin-top: 20px; margin-bottom: 20px;" align="center">
+    <span style="color: red;margin-right: 10px;font-weight: bolder;">注:本系统数据来自本机数据库,系统每日会自动定时更新一次.如果觉得数据不正确,请点击"同步数据"按钮从CP4服务器上拉取最新数据至本地!</span>
+    <button class="btn btn-success btn-lg" id="syncdb" style="margin-left: 20px;">同步数据</button>
+</div>
+
+<script language="javascript">
+    $('#syncdb').click(function(){
+        $('#syncdb').text("正在同步...请稍候")
+        $(this).attr("disabled", true); // 设置按钮不可用
+        var url = "/syncdb/"
+        $.post(url,"",function(result){
+            alert(result);
+            $('#syncdb').text("同步数据")
+            location.reload()
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2 @@
+-- 查询已结束的项目
+SELECT `CODE` PROJECT_CODE,JIRA_PROJECT_ID FROM ctrip_projectpm WHERE MAIN_STATE = 5

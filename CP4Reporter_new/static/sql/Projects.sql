@@ -1,0 +1,2 @@
+-- 项目
+SELECT * from ctrip_projectpm WHERE JIRA_PROJECT_ID IN(11300,11301,11302,11303)

@@ -1,0 +1,40 @@
+<table class="table table-hover table-condensed" border="1" cellspacing="1" bordercolor="#ddd" cellpadding="1" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <td colspan="13" align="center"><h1 style="font-size: 24px;font-weight: bolder;color: #333333;">项目BUG统计</h1></td>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center"><h3>项目名称</h3></td>
+                <td colspan="5" style="text-align: center"><h3>状态</h3></td>
+                <td colspan="3" style="text-align: center"><h3>今日数据</h3></td>
+                <td style="text-align: center"><h3>总计</h3></td>
+            </tr>
+            <tr style="text-align: center">
+                <td><p style="color: #5e5e5e;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 打开</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 正在处理</p></td>
+                <td><p style="color: #398439;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 已解决</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-ok"></span> 已关闭</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 所有回退</p></td>
+                <td><p style="color: #ec971f;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日新建</p></td>
+                <td><p style="color: #ac2925;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日回退</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 今日关闭</p></td>
+                <td><p style="color: #4cae4c;font-weight: bold;padding-top: 10px;"><span class="glyphicon glyphicon-log-out"></span> 总计</p></td>
+            </tr>
+        </thead>
+        <tbody id="pro">
+        {% for k,v in issues.items %}
+            <tr align="center">
+                <td class="mymark"><a href="/projectBug/?proName={{ k }}">{{ k }}</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Open">{{ v.openNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=In Progress">{{ v.inProgressNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Resolved">{{ v.resolvedNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Closed">{{ v.closedNums }}</a></td>
+                <td><a href="/bugDetails/?proName={{ k }}&status=Reopened">{{ v.reopenNums }}</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=TodayOpen">{{ v.topenNums }}</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=TodayReOpen">{{ v.treopenNums }}</a></td>
+                <td><a href="/todayBugDetails/?proName={{ k }}&status=TodayClosed">{{ v.tclosedNums }}</a></td>
+                <td>{{ v.allNums }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>

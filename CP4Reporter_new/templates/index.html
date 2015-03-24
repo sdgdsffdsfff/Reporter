@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="content-Type" content="text/html" charset="UTF-8">
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <link href="/static/flat-ui/css/flat-ui.css" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+
+<div id="header">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+    <ul class="nav navbar-nav navbar-left">
+        <li class="active"><a href="/mainreport/" ><span class="glyphicon glyphicon-home"></span> Reporter平台</a></li>
+        <li id="products" class="dropdown">
+            <a href="#" class="dropdown-toggle product" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> 选择产品<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">所有产品</a></li>
+                <li class="divider"></li>
+                {% for p in products %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ p.product_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+
+        <li id="projects" class="dropdown">
+            <a href="#" class="dropdown-toggle project" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> 选择项目<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+
+            </ul>
+        </li>
+
+        <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="请输入关键字">
+            </div>
+            <button type="submit" class="btn btn-default">搜索</button>
+        </form>
+
+    </ul>
+</nav>
+</div>
+
+<div id="main">
+    <span style="font-size: 20px;font-weight: bolder;">请选择产品和项目!!!</span>
+</div>
+
+<div id="footer">
+<div class="container" style="margin-top: 20px; margin-bottom: 20px;" align="center">
+    <span style="color: red;margin-right: 10px;font-weight: bolder;">注:本系统数据来自本机数据库,系统每日会自动定时更新一次.如果觉得数据不正确,请点击"同步数据"按钮从CP4服务器上拉取最新数据至本地!</span>
+    <button class="btn btn-success btn-lg" id="syncdb" style="margin-left: 20px;">同步数据</button>
+</div>
+</div>
+
+<script type="text/javascript">
+    $('#syncdb').click(function(){
+        $('#syncdb').text("正在同步...请稍候")
+        $(this).attr("disabled", true); // 设置按钮不可用
+        var url = "/syncdb/"
+        $.post(url,"",function(result){
+            alert(result);
+            $('#syncdb').text("同步数据")
+            location.reload()
+        });
+    });
+
+    $("#products ul li").click(function(){
+        $(".product").text($(this).text());
+        var url = "/projects/";
+        var data = {"product":$(this).text()}
+        $.ajax({
+            url:url,
+            data:data,
+            type:"POST",
+            success:function(dates){
+                $("#projects ul").empty()
+                $("#projects ul").html(dates)
+            }
+        });
+    });
+    $("form button").click(function(){
+        var url = "/issues/";
+        var data = {"project":$("form div input").val()};
+        if(data == ""){
+            alert("关键字不能为空!");
+        }else{
+            $.ajax({
+            url:url,
+            data:data,
+            type:"POST",
+            success:function(dates){
+                $("#main").empty()
+                $("#main").html(dates)
+            }
+        });
+        }
+    });
+</script>
+
+</body>
+</html>

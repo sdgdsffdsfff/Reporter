@@ -1,0 +1,21 @@
+<li role="presentation"><a role="menuitem" tabindex="-1" href="#">所有项目</a></li>
+<li class="divider"></li>
+{% for p in projects %}
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ p.project_name }}</a></li>
+{% endfor %}
+<script type="text/javascript">
+    $("#projects ul li").click(function(){
+        $(".project").text($(this).text());
+        var url = "/issues/";
+        var data = {"project":$(this).text()}
+        $.ajax({
+            url:url,
+            data:data,
+            type:"POST",
+            success:function(dates){
+                $("#main").empty()
+                $("#main").html(dates)
+            }
+        });
+    });
+</script>

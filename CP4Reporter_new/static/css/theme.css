@@ -1,0 +1,12 @@
+body{
+    background-color: #ECF0F1;
+}
+
+#header{
+    margin: 20px 0 0 20px;
+}
+
+#main{
+    margin-top: 100px;
+    text-align: center;
+}
